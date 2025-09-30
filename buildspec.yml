@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.13
+    commands:
+      - pip install aws-sam-cli
+  pre_build:
+    commands:
+      - echo "Running optional tests..."
+      # Add pytest/unittest here if needed
+  build:
+    commands:
+      - echo "Building Lambda package..."
+      - sam build
+      - echo "Packaging Lambda using SAM..."
+      - sam package --s3-bucket sunil-webapp-demo --output-template-file packaged.yaml
+
+artifacts:
+  files:
+    - packaged.yaml
