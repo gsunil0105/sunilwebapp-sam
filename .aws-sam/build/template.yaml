@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'SunilWebApp - SAM app: Uploads notification Lambda wired to existing
+  SNS, SQS, and S3.
+
+  '
+Resources:
+  UploadsNotificationFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: SunilWebApp-UploadsNotificationFunction
+      CodeUri: UploadsNotificationFunction
+      Handler: app.lambda_handler
+      Runtime: python3.13
+      Timeout: 10
+      MemorySize: 256
+      Environment:
+        Variables:
+          SNS_TOPIC_ARN: arn:aws:sns:us-east-1:577999459414:SunilWebApp-UploadsNotificationTopic
+          SQS_QUEUE_URL: https://sqs.us-east-1.amazonaws.com/577999459414/SunilWebApp-UploadsNotificationQueue
+      Policies:
+      - AWSLambdaBasicExecutionRole
+      - SNSPublishMessagePolicy:
+          TopicName: SunilWebApp-UploadsNotificationTopic
+      - SQSSendMessagePolicy:
+          QueueName: SunilWebApp-UploadsNotificationQueue
+      AutoPublishAlias: live
+      DeploymentPreference:
+        Type: Linear10PercentEvery1Minute
+        Enabled: true
+    Metadata:
+      SamResourceId: UploadsNotificationFunction
+Outputs:
+  LambdaFunctionName:
+    Description: The name of the deployed Lambda function
+    Value: SunilWebApp-UploadsNotificationFunction
+  S3BucketName:
+    Description: The existing S3 bucket being monitored
+    Value: sunil-webapp-demo
+  SnsTopicArn:
+    Description: Existing SNS Topic ARN
+    Value: arn:aws:sns:us-east-1:577999459414:SunilWebApp-UploadsNotificationTopic
+  SqsQueueArn:
+    Description: Existing SQS Queue ARN
+    Value: arn:aws:sqs:us-east-1:577999459414:SunilWebApp-UploadsNotificationQueue
+  SqsQueueUrl:
+    Description: Existing SQS Queue URL
+    Value: https://sqs.us-east-1.amazonaws.com/577999459414/SunilWebApp-UploadsNotificationQueue
