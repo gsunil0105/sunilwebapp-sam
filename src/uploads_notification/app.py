@@ -21,7 +21,7 @@ def lambda_handler(event, context):
     Lambda handler triggered by S3 object-created events.
     Publishes a message to SNS (for email) and SQS (for downstream consumers).
     """
-    logger.info("Received event: %s", json.dumps(event))
+    logger.info("Received event from codebuild: %s", json.dumps(event))
 
     records = event.get('Records', [])
     msgs = []
